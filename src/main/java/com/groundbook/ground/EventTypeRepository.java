@@ -1,6 +1,7 @@
 package com.groundbook.ground;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,16 @@ public class EventTypeRepository {
             .param(venueId)
             .query(Row.class)
             .list();
+    }
+
+    public Optional<Row> one(long venueId, String code) {
+        return jdbc.sql("""
+                SELECT code, name, setup_minutes, teardown_minutes
+                FROM event_types
+                WHERE venue_id = ? AND code = ?""")
+            .params(venueId, code)
+            .query(Row.class)
+            .optional();
     }
 
     public void insert(long venueId, String code, String name, int setupMinutes, int teardownMinutes) {
